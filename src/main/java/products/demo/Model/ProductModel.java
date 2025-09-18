@@ -16,7 +16,7 @@ public class ProductModel {
     private String productName;
     private String productDesc;
     private String productCategory;
-    private String price;
+    private Double price;
     private String currency;
     private String sku;
     private String stock_quantity;
