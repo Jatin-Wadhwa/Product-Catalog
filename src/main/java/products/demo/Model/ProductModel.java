@@ -15,7 +15,7 @@ public class ProductModel {
     private Integer id;
     private String productName;
     private String productDesc;
-    private String productCategory;
+//    private String productCategory;
     private Double price;
     private String currency;
     private String sku;
@@ -25,4 +25,8 @@ public class ProductModel {
     private boolean is_Deleted;
     private String updatedAt;
     private String createdAt;
+
+    @ManyToOne
+    @JoinColumn(name="category_id")//Creates a foreign key in the products table pointing to categories.id
+    private Category category;
 }

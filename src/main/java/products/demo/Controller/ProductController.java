@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import products.demo.DTO.ApiResponse;
 import products.demo.DTO.ProductDto;
 import products.demo.Service.ProductService;
 
@@ -20,29 +21,41 @@ public class ProductController {
         this.service=service;
     }
 
+//    @GetMapping
+//    public ResponseEntity<List<ProductDto>>  getAllProducts(){
+//        List<ProductDto> products = service.getAllProducts();
+//        return ResponseEntity.ok(products);
+//    }
+
     @GetMapping
-    public ResponseEntity<List<ProductDto>>  getAllProducts(){
-        List<ProductDto> products = service.getAllProducts();
-        return ResponseEntity.ok(products);
+    public ResponseEntity<ApiResponse<List<ProductDto>>> getProducts(@RequestParam(required = false) String name,
+                                                        @RequestParam(required = false) Double price,
+                                                        @RequestParam(required = false) String category,
+                                                        @RequestParam(defaultValue="id") String sortBy,
+                                                        @RequestParam(defaultValue="asc")String direction,
+                                                        @RequestParam(defaultValue = "0") int page,
+                                                        @RequestParam(defaultValue = "10")int pageSize){
+        List<ProductDto> products=service.getProducts(name, price,category,sortBy,direction, page, pageSize);
+        return ResponseEntity.ok(new ApiResponse<>(true,"Products fetched successfully",products));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getProductById(@PathVariable("id") Integer productId){
+    public ResponseEntity<ApiResponse<ProductDto>> getProductById(@PathVariable("id") Integer productId){
         ProductDto product = service.getProductById(productId);
         if(product!=null){
-            return ResponseEntity.ok(product);
+            return ResponseEntity.ok(new ApiResponse<>(true,"product found",product));
         }
         else {
             return ResponseEntity.status(404).body(
-                    java.util.Map.of("error", "Product not found", "id", productId)
+                    new ApiResponse<>(false,"product not found",null)
             );
         }
     }
 
     @PostMapping
-    public ResponseEntity<ProductDto> addProduct(@Valid @RequestBody ProductDto product){
+    public ResponseEntity<ApiResponse<ProductDto>> addProduct(@Valid @RequestBody ProductDto product){
         ProductDto newProduct= service.addProduct(product);
-        return ResponseEntity.status(201).body(newProduct);
+        return ResponseEntity.status(201).body(new ApiResponse<>(true, "product added successfully",newProduct));
     }
 
     @PutMapping("/{id}")
@@ -59,7 +72,7 @@ public class ProductController {
     }
 
 
-    @DeleteMapping("/${id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable Integer id){
         boolean deleted=service.deleteProduct(id);
         if (deleted) {

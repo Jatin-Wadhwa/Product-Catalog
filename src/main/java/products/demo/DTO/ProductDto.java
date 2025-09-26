@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductDto {
+    private Integer id;
     @NotBlank(message = "Product name is required")
     private String productName;
 
@@ -16,7 +17,7 @@ public class ProductDto {
     private String productDesc;
 
     @NotBlank(message = "Category is required")
-    private String productCategory;
+    private CategoryDTO category;
 
     @NotNull(message = "Price is required")
     @Positive(message = "Price must be positive")
@@ -32,4 +33,7 @@ public class ProductDto {
     private Integer stockQuantity;
 
     private String mainImageUrl;
+
+    private boolean is_Active;
+    private boolean is_Deleted;
 }
