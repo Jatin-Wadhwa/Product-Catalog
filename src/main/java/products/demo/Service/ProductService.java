@@ -126,7 +126,8 @@ public class ProductService {
         }).orElse(false);
     }
 
-    public List<ProductDto> getProducts(String name, Double price, String category, String sortBy,String direction, int page, int pageSize) {
+    public List<ProductDto> getProducts(String name, Double price, String category,
+                                        String sortBy,String direction, int page, int pageSize) {
         Sort sort=direction.equalsIgnoreCase("desc") ?
                 Sort.by(sortBy).descending() :
                 Sort.by(sortBy).ascending();
