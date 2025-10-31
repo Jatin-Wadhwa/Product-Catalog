@@ -34,7 +34,7 @@ public class ProductController {
                                                         @RequestParam(defaultValue="id") String sortBy,
                                                         @RequestParam(defaultValue="asc")String direction,
                                                         @RequestParam(defaultValue = "0") int page,
-                                                        @RequestParam(defaultValue = "10")int pageSize){
+                                                        @RequestParam(defaultValue = "1000")int pageSize){
         List<ProductDto> products=service.getProducts(name, price,category,sortBy,direction, page, pageSize);
         return ResponseEntity.ok(new ApiResponse<>(true,"Products fetched successfully",products));
     }
