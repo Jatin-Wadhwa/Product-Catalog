@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import products.demo.DTO.ApiResponse;
+import products.demo.DTO.CategoryDTO;
 import products.demo.DTO.ProductDto;
 import products.demo.Service.ProductService;
 
@@ -31,11 +32,14 @@ public class ProductController {
     public ResponseEntity<ApiResponse<List<ProductDto>>> getProducts(@RequestParam(required = false) String name,
                                                         @RequestParam(required = false) Double price,
                                                         @RequestParam(required = false) String category,
+                                                        @RequestParam(defaultValue = "false") boolean dashboard,
+                                                        @RequestParam(required = false) Double minDiscount,
+                                                        @RequestParam(required = false) Double maxDiscount,
                                                         @RequestParam(defaultValue="id") String sortBy,
                                                         @RequestParam(defaultValue="asc")String direction,
                                                         @RequestParam(defaultValue = "0") int page,
                                                         @RequestParam(defaultValue = "1000")int pageSize){
-        List<ProductDto> products=service.getProducts(name, price,category,sortBy,direction, page, pageSize);
+        List<ProductDto> products=service.getProducts(name, price,category,dashboard,minDiscount,maxDiscount,sortBy,direction, page, pageSize);
         return ResponseEntity.ok(new ApiResponse<>(true,"Products fetched successfully",products));
     }
 

@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import products.demo.DTO.CategoryDTO;
 import products.demo.DTO.ProductDto;
 import products.demo.Model.Category;
 import products.demo.Model.ProductModel;
@@ -52,12 +53,15 @@ public class ProductService {
 
         existing.setProductName(dto.getProductName());
         existing.setProductDesc(dto.getProductDesc());
+        existing.setDiscount(dto.getDiscount());
         existing.setPrice(dto.getPrice());
         existing.setCurrency(dto.getCurrency());
         existing.setSku(dto.getSku());
         existing.setStock_quantity(String.valueOf(dto.getStockQuantity()));
         existing.setMain_image_url(dto.getMainImageUrl());
         existing.setUpdatedAt(LocalDateTime.now().toString());
+        existing.set_Active(dto.is_Active());
+        existing.set_Deleted(dto.is_Deleted());
 
         if (dto.getCategoryId() != null) {
             Category category = categoryRepo.findById(dto.getCategoryId())
@@ -78,7 +82,7 @@ public class ProductService {
         }).orElse(false);
     }
 
-    public List<ProductDto> getProducts(String name, Double price, String category,
+    public List<ProductDto> getProducts(String name, Double price, String category,boolean dashboard, Double minDiscount, Double maxDiscount,
                                         String sortBy, String direction, int page, int pageSize) {
         Sort sort = direction.equalsIgnoreCase("desc")
                 ? Sort.by(sortBy).descending()
@@ -90,15 +94,42 @@ public class ProductService {
         return entities.stream()
                 .filter(p -> name == null || (p.getProductName() != null && p.getProductName().toLowerCase().contains(name.toLowerCase())))
                 .filter(p -> price == null || (p.getPrice() != null && p.getPrice() >= price))
+                .filter(p->!dashboard||Boolean.TRUE.equals(p.isDashboard()))
+                .filter(p -> {
+                    Double discountValue = p.getDiscount();
+
+                    // If user applied a discount filter, exclude nulls
+                    if ((minDiscount != null || maxDiscount != null) && discountValue == null) {
+                        return false;
+                    }
+
+                    if (minDiscount != null && maxDiscount != null) {
+                        // Between min and max
+                        return discountValue >= minDiscount && discountValue <= maxDiscount;
+                    } else if (minDiscount != null) {
+                        // Greater than or equal to min
+                        return discountValue >= minDiscount;
+                    } else if (maxDiscount != null) {
+                        // Less than or equal to max
+                        return discountValue <= maxDiscount;
+                    } else {
+                        // No discount filter applied → allow all
+                        return true;
+                    }
+                })
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
+
+
 
     private ProductDto convertToDto(ProductModel entity) {
         return new ProductDto(
                 entity.getId(),
                 entity.getProductName(),
                 entity.getProductDesc(),
+                entity.isDashboard(),
+                entity.getDiscount(),
                 entity.getCategory() != null ? entity.getCategory().getId() : null,
                 entity.getPrice(),
                 entity.getCurrency(),
@@ -116,6 +147,8 @@ public class ProductService {
         ProductModel entity = new ProductModel();
         entity.setProductName(dto.getProductName());
         entity.setProductDesc(dto.getProductDesc());
+        entity.setDashboard(dto.isDashboard());
+        entity.setDiscount(dto.getDiscount());
         entity.setPrice(dto.getPrice());
         entity.setCurrency(dto.getCurrency());
         entity.setSku(dto.getSku());

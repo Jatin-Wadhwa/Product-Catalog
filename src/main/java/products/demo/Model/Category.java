@@ -19,6 +19,8 @@ public class Category {
 
     @NotBlank(message = "category name is required")
     private String name;
+    @NotBlank(message = "Image Link required")
+    private String main_image_url;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)//CascadeType.ALL Changes made to a Category (like saving or deleting) will cascade to its associated products automatically.
     private List<ProductModel> products;

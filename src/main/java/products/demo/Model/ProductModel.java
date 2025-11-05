@@ -15,6 +15,8 @@ public class ProductModel {
     private Integer id;
     private String productName;
     private String productDesc;
+    private boolean dashboard;
+    private Double discount;
 //    private String productCategory;
     private Double price;
     private String currency;

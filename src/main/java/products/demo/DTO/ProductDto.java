@@ -1,9 +1,12 @@
 package products.demo.DTO;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
+import jdk.jfr.Percentage;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @Data
 @NoArgsConstructor
@@ -15,6 +18,13 @@ public class ProductDto {
 
     @Size(max = 500, message = "Description cannot exceed 500 characters")
     private String productDesc;
+
+    private boolean dashboard;
+
+    @Min(value = 0,message = "Discount cannot be negative")
+    @Max(value = 100,message="Discount cannot be greater than 100")
+//    @Percentage
+    private Double discount;
 
     @NotNull(message = "Category ID is required")
     private Integer categoryId;
@@ -34,6 +44,8 @@ public class ProductDto {
 
     private String mainImageUrl;
 
+    @JsonProperty("_Active")
     private boolean is_Active;
+    @JsonProperty("_Deleted")
     private boolean is_Deleted;
 }
