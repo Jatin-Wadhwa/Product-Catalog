@@ -8,6 +8,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
+import java.util.List;
+import java.util.Map;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -44,8 +47,13 @@ public class ProductDto {
 
     private String mainImageUrl;
 
+
     @JsonProperty("_Active")
     private boolean is_Active;
     @JsonProperty("_Deleted")
     private boolean is_Deleted;
+
+    private List<String> subImages;
+
+    private List<Map<String, String>> productDetails;
 }

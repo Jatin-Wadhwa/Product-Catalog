@@ -62,6 +62,8 @@ public class ProductService {
         existing.setUpdatedAt(LocalDateTime.now().toString());
         existing.set_Active(dto.is_Active());
         existing.set_Deleted(dto.is_Deleted());
+        existing.setProductDetails(dto.getProductDetails());
+        existing.setSubImages(dto.getSubImages());
 
         if (dto.getCategoryId() != null) {
             Category category = categoryRepo.findById(dto.getCategoryId())
@@ -139,7 +141,9 @@ public class ProductService {
                         : 0,
                 entity.getMain_image_url(),
                 entity.is_Active(),
-                entity.is_Deleted()
+                entity.is_Deleted(),
+                entity.getSubImages(),
+                entity.getProductDetails()
         );
     }
 
@@ -154,6 +158,8 @@ public class ProductService {
         entity.setSku(dto.getSku());
         entity.setStock_quantity(String.valueOf(dto.getStockQuantity()));
         entity.setMain_image_url(dto.getMainImageUrl());
+        entity.setProductDetails(dto.getProductDetails());
+        entity.setSubImages(dto.getSubImages());
 
         if (dto.getCategoryId() != null) {
             Category category = categoryRepo.findById(dto.getCategoryId())
