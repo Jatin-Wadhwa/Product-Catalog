@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import products.demo.DTO.CategoryDTO;
 import products.demo.DTO.ProductDto;
+import products.demo.DTO.ProductSuggestionDto;
 import products.demo.Model.Category;
 import products.demo.Model.ProductModel;
 import products.demo.Repo.CategoryRepository;
@@ -84,7 +85,7 @@ public class ProductService {
         }).orElse(false);
     }
 
-    public List<ProductDto> getProducts(String name, Double price, String category,boolean dashboard, Double minDiscount, Double maxDiscount,
+    public List<ProductDto> getProducts(String name, Double price,Integer categoryId,boolean dashboard, Double minDiscount, Double maxDiscount,
                                         String sortBy, String direction, int page, int pageSize) {
         Sort sort = direction.equalsIgnoreCase("desc")
                 ? Sort.by(sortBy).descending()
@@ -96,6 +97,8 @@ public class ProductService {
         return entities.stream()
                 .filter(p -> name == null || (p.getProductName() != null && p.getProductName().toLowerCase().contains(name.toLowerCase())))
                 .filter(p -> price == null || (p.getPrice() != null && p.getPrice() >= price))
+                .filter(p -> categoryId == null ||
+                        (p.getCategory() != null && p.getCategory().getId().equals(categoryId)))
                 .filter(p->!dashboard||Boolean.TRUE.equals(p.isDashboard()))
                 .filter(p -> {
                     Double discountValue = p.getDiscount();
@@ -123,6 +126,17 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
+    public List<ProductSuggestionDto> getProductSuggestions(String name){
+        if(name==null || name.trim().isEmpty()){
+            return List.of();
+        }
+
+        List<ProductModel> products=repository.findTop10ByProductNameContainingIgnoreCase(name);
+
+        return products.stream()
+                .map(p -> new ProductSuggestionDto(p.getId(), p.getProductName()))
+                .collect(Collectors.toList());
+    }
 
 
     private ProductDto convertToDto(ProductModel entity) {

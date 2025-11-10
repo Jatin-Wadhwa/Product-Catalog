@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import products.demo.DTO.ApiResponse;
 import products.demo.DTO.CategoryDTO;
 import products.demo.DTO.ProductDto;
+import products.demo.DTO.ProductSuggestionDto;
 import products.demo.Service.ProductService;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<ApiResponse<List<ProductDto>>> getProducts(@RequestParam(required = false) String name,
                                                         @RequestParam(required = false) Double price,
-                                                        @RequestParam(required = false) String category,
+                                                        @RequestParam(required = false) Integer categoryId,
                                                         @RequestParam(defaultValue = "false") boolean dashboard,
                                                         @RequestParam(required = false) Double minDiscount,
                                                         @RequestParam(required = false) Double maxDiscount,
@@ -39,7 +40,7 @@ public class ProductController {
                                                         @RequestParam(defaultValue="asc")String direction,
                                                         @RequestParam(defaultValue = "0") int page,
                                                         @RequestParam(defaultValue = "1000")int pageSize){
-        List<ProductDto> products=service.getProducts(name, price,category,dashboard,minDiscount,maxDiscount,sortBy,direction, page, pageSize);
+        List<ProductDto> products=service.getProducts(name, price,categoryId,dashboard,minDiscount,maxDiscount,sortBy,direction, page, pageSize);
         return ResponseEntity.ok(new ApiResponse<>(true,"Products fetched successfully",products));
     }
 
@@ -88,6 +89,12 @@ public class ProductController {
                     java.util.Map.of("error", "Product not found", "id", id)
             );
         }
+    }
+
+    @GetMapping("/suggestions")
+    public ResponseEntity<ApiResponse<List<ProductSuggestionDto>>> getProductSuggestions(@RequestParam String name){
+        List<ProductSuggestionDto> suggestions=service.getProductSuggestions(name);
+        return ResponseEntity.ok(new ApiResponse<>(true,"suggested products fetched",suggestions));
     }
 
 
