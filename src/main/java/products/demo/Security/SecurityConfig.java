@@ -27,6 +27,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http.cors().and().csrf(csrf->csrf.disable())
                 .authorizeHttpRequests(auth->auth.requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/wishlist/**").permitAll()
                         .requestMatchers("/products/**", "/categories/**").hasAnyRole("USER","ADMIN")
                         .requestMatchers(HttpMethod.POST,"/products/**","/categories/**").hasRole("ADMIN").anyRequest().authenticated())
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

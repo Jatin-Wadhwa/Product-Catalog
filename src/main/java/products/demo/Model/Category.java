@@ -1,5 +1,6 @@
 package products.demo.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -23,6 +24,7 @@ public class Category {
     private String main_image_url;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)//CascadeType.ALL Changes made to a Category (like saving or deleting) will cascade to its associated products automatically.
+    @JsonIgnore
     private List<ProductModel> products;
 
 

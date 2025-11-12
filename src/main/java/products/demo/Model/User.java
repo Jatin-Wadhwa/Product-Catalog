@@ -1,5 +1,6 @@
 package products.demo.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -17,8 +18,10 @@ public class User {
     @JsonProperty("username")
     private String userName;
 
+    @JsonIgnore
     private String password;
 
     @Enumerated(EnumType.STRING)
+    @JsonIgnore
     private Role role;
 }
