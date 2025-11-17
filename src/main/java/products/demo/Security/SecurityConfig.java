@@ -12,20 +12,26 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import products.demo.Config.WebConfig;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final JwtAuthFilter jwtAuthFilter;
 
-    public SecurityConfig(JwtAuthFilter jwtAuthFilter){
+
+    private final JwtAuthFilter jwtAuthFilter;
+    private final WebConfig webConfig;
+
+    public SecurityConfig(JwtAuthFilter jwtAuthFilter, WebConfig webConfig){
         this.jwtAuthFilter=jwtAuthFilter;
+        this.webConfig=webConfig;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http.cors().and().csrf(csrf->csrf.disable())
+                .cors(cors -> cors.configurationSource(webConfig.corsConfigurationSource()))
                 .authorizeHttpRequests(auth->auth.requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/wishlist/**").permitAll()
                         .requestMatchers("/products/**", "/categories/**").hasAnyRole("USER","ADMIN")
