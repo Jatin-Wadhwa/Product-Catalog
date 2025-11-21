@@ -23,6 +23,7 @@ public class User {
     private String password;
 
     @Enumerated(EnumType.STRING)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JsonIgnore
     private Role role;
 }
