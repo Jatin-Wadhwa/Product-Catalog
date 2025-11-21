@@ -15,6 +15,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(unique = true)
     @JsonProperty("username")
     private String userName;
 

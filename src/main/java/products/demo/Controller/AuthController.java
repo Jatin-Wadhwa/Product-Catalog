@@ -30,6 +30,13 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) {
+
+        if(repo.findByUserName(user.getUserName()).isPresent()){
+            return ResponseEntity.badRequest().body(
+                    Map.of("message","Username already exist")
+            );
+        }
+
         user.setPassword(encoder.encode(user.getPassword()));
         if (user.getRole() == null) user.setRole(Role.ROLE_USER);
         repo.save(user);
