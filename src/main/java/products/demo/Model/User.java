@@ -18,7 +18,7 @@ public class User {
     @JsonProperty("username")
     private String userName;
 
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @Enumerated(EnumType.STRING)
